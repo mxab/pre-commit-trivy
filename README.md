@@ -18,3 +18,7 @@ repos:
           - ./tests
           - . # last arg indicates the path/file to scan
 ```
+
+## Example
+
+You can find a sample use case here https://github.com/mxab/trivy-pre-commit-demo
