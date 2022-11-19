@@ -10,7 +10,7 @@ Insert the required flags in the `args` field.
 ```yaml
 repos:
 -   repo: https://github.com/mxab/pre-commit-trivy.git
-    rev: vX.Y.Z
+    rev: v0.1.0
     hooks:
     -   id: trivyfs-docker
         args:
