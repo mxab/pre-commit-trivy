@@ -1,6 +1,6 @@
 
 - id: trivyfs-docker
   name: trivyfs-docker
-  entry: aquasec/trivy fs --cache-dir /tmp/.cache --exit-code 1
+  entry: aquasec/trivy fs --cache-dir /src/.pre-commit-trivv-cache --exit-code 1
   language: docker_image
   pass_filenames: false
