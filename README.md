@@ -7,7 +7,7 @@ Insert the required flags in the `args` field.
 
 ## trivyfs-docker
 pre-commit will use the latest `aquasecurity/trivy` docker image and run it inside a docker container.
-It will create a cache directory `.pre-commit-trivv-cache` in your repo. Add it to the `.gitignore`.
+It will create a cache directory `.pre-commit-trivy-cache` in your repo. Add it to the `.gitignore`.
 
 ```yaml
 repos:
