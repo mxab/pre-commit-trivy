@@ -12,6 +12,6 @@
 
 - id: trivyconfig-docker
   name: trivyconfig-docker
-  entry: aquasec/trivy:0.37.1 config --cache-dir /src/.pre-commit-trivy-cache exit-code 1
+  entry: aquasec/trivy:0.40 config --cache-dir /src/.pre-commit-trivy-cache exit-code 1
   language: docker_image
   pass_filenames: false
