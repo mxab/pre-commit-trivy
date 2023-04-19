@@ -13,7 +13,7 @@ pre-commit will use the `aquasecurity/trivy:0.40.0` docker image and run it insi
 ```yaml
 repos:
 -   repo: https://github.com/mxab/pre-commit-trivy.git
-    rev: v0.5.0
+    rev: v0.5.1
     hooks:
     -   id: trivyfs-docker
         args:
