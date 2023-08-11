@@ -8,12 +8,12 @@ Insert the required flags in the `args` field.
 You can also use the trivyconfig-docker` to scan for misconfigurations [trivy config](https://aquasecurity.github.io/trivy/v0.38/docs/misconfiguration/scanning/)
 
 ## trivyfs-docker
-pre-commit will use the `aquasecurity/trivy:0.40.0` docker image and run it inside a docker container.
+pre-commit will use the `aquasecurity/trivy:0.44.0` docker image and run it inside a docker container.
 
 ```yaml
 repos:
 -   repo: https://github.com/mxab/pre-commit-trivy.git
-    rev: v0.5.1
+    rev: v0.6.0
     hooks:
     -   id: trivyfs-docker
         args:
