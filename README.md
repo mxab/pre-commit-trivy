@@ -2,19 +2,19 @@
 
 Add this to your [pre-commit](https://pre-commit.com/) `.pre-commit-config.yaml` config.
 
-You can use [trivy fs flags](https://trivy.dev/docs/v0.68/guide/target/filesystem/) to configure Trivy filesytem scans.
+You can use [trivy fs flags](https://trivy.dev/docs/v0.70/guide/target/filesystem/) to configure Trivy filesytem scans.
 Insert the required flags in the `args` field.
 
-You can also use the `trivyconfig-docker` to scan for misconfigurations [trivy config](https://trivy.dev/docs/v0.68/guide/scanner/misconfiguration/)
+You can also use the `trivyconfig-docker` to scan for misconfigurations [trivy config](https://trivy.dev/docs/v0.70/guide/scanner/misconfiguration/)
 
 ## trivyfs-docker
 
-pre-commit will use the `aquasec/trivy:0.68.2` docker image and run it inside a docker container.
+pre-commit will use the `aquasec/trivy:0.70.0` docker image and run it inside a docker container.
 
 ```yaml
 repos:
   - repo: https://github.com/mxab/pre-commit-trivy.git
-    rev: v0.17.0
+    rev: v0.18.0
     hooks:
       - id: trivyfs-docker
         args:
