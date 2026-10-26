@@ -1,0 +1,70 @@
+name: release
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .pre-commit-hooks.yaml
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency: release
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7.0.1
+
+      - name: Get current trivy version
+        run: |
+          VERSION="$(grep -oPm1 'aquasec/trivy:\K[0-9]+\.[0-9]+\.[0-9]+' .pre-commit-hooks.yaml)"
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+
+      - name: Get latest stable trivy version
+        if: github.event_name != 'push'
+        run: |
+          URL="https://api.github.com/repos/aquasecurity/trivy/releases/latest"
+          LATEST="$(curl -sf -H "Authorization: Bearer $GH_TOKEN" "$URL" | jq -r .tag_name | sed 's/^v//')"
+          [[ $LATEST =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          echo "LATEST=$LATEST" >> "$GITHUB_ENV"
+
+      - name: Bump trivy version
+        if: env.LATEST != '' && env.LATEST != env.VERSION
+        run: |
+          if [ "$(printf '%s\n' "$VERSION" "$LATEST" | sort -V | tail -1)" = "$VERSION" ]; then
+            exit 0
+          fi
+          docker manifest inspect "aquasec/trivy:$LATEST" > /dev/null
+          sed -i "s/${VERSION//./\\.}/$LATEST/g" .pre-commit-hooks.yaml README.md
+          sed -Ei "s#trivy\.dev/docs/v[0-9]+\.[0-9]+/#trivy.dev/docs/v${LATEST%.*}/#g" README.md
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -am "chore(deps): bump \`trivy\` version to \`$LATEST\`"
+          git push
+          echo "VERSION=$LATEST" >> "$GITHUB_ENV"
+
+      - name: Check if release exists
+        run: |
+          URL="https://api.github.com/repos/$GITHUB_REPOSITORY/releases/tags/v$VERSION"
+          STATUS="$(curl -s -o /dev/null -w '%{http_code}' -H "Authorization: Bearer $GH_TOKEN" "$URL")"
+          [[ $STATUS == 200 || $STATUS == 404 ]]
+          echo "RELEASE_STATUS=$STATUS" >> "$GITHUB_ENV"
+          echo "SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Create release
+        if: env.RELEASE_STATUS == '404'
+        uses: softprops/action-gh-release@v3.0.3
+        with:
+          name: v${{ env.VERSION }}
+          tag_name: v${{ env.VERSION }}
+          target_commitish: ${{ env.SHA }}
+          generate_release_notes: true
